@@ -1,15 +1,15 @@
-import {ChatCompletionRequestMessage, Configuration, OpenAIApi} from "openai";
+import {Configuration, OpenAIApi} from "openai";
 import config from "config";
 import {createReadStream} from "fs";
 
 class OpenAI {
     openai
-    constructor(apiKey: string) {
+    constructor(apiKey) {
         const configuration = new Configuration({apiKey})
         this.openai = new OpenAIApi(configuration)
     }
 
-    async chat(messages: ChatCompletionRequestMessage[]){
+    async chat(messages){
         const res = await this.openai.createChatCompletion({
             model: 'gpt-3.5-turbo',
             messages
@@ -17,12 +17,12 @@ class OpenAI {
         return res.data.choices[0].message
     }
 
-    async transcription(filePath: string){
+    async transcription(filePath){
         try {
             const res = await this.openai.createTranscription(createReadStream(filePath), 'whisper-1')
             console.log(res)
             return res.data.text
-        } catch (e: any) {
+        } catch (e) {
             console.log('Error while transcription', e.message)
         }
     }

@@ -2,21 +2,18 @@ import {Telegraf, session} from "telegraf";
 import {message} from "telegraf/filters";
 import {code} from "telegraf/format";
 import config from 'config'
-import {oggConverter} from "./helpers/OggConverter.ts";
-import {openAI} from "./helpers/OpenAI.ts";
-import {ChatCompletionRequestMessage} from "openai";
+import {oggConverter} from "./helpers/OggConverter.js";
+import {openAI} from "./helpers/OpenAI.js";
 const INITIAL_SESSION = {
     messages: []
 }
 const bot = new Telegraf(config.get('TELEGRAM_TOKEN'))
 bot.use(session())
 bot.command('start', async (ctx) => {
-    //@ts-ignore
     ctx.session = INITIAL_SESSION
     await ctx.reply('Жду вашего голосового или текстового сообщения')
 })
 bot.command('new', async (ctx) => {
-    //@ts-ignore
     ctx.session = INITIAL_SESSION
     await ctx.reply('Жду вашего голосового или текстового сообщения')
 })
@@ -28,8 +25,8 @@ bot.on(message('voice'), async (ctx) => {
         const userId = String(ctx.message.from.id)
         const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id)
         const oggPath = await oggConverter.saveOggToLocalFile(link.href, userId)
-        const mp3Path = await oggConverter.toMp3(oggPath as string, userId)
-        const text = await openAI.transcription(mp3Path as string)
+        const mp3Path = await oggConverter.toMp3(oggPath, userId)
+        const text = await openAI.transcription(mp3Path)
         if(!text) {
             return await ctx.reply('Что-то пошло не так :(')
         }
@@ -44,7 +41,7 @@ bot.on(message('voice'), async (ctx) => {
             return await ctx.reply('Чат не смог ответить на ваш запрос :(')
         }
         await ctx.reply(response.content)
-    } catch (e: any) {
+    } catch (e) {
         console.log('Error voice message', e.message)
     }
 })
@@ -65,7 +62,7 @@ bot.on(message('text'), async (ctx) => {
             return await ctx.reply('Чат не смог ответить на ваш запрос :(')
         }
         await ctx.reply(response.content)
-    } catch (e: any) {
+    } catch (e) {
         console.log('Error voice message', e.message)
     }
 })

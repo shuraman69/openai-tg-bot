@@ -10,7 +10,7 @@ class OggConverter {
     constructor() {
         ffmpeg.setFfmpegPath(installer.path)
     }
-    toMp3(oggPath: string, userId: string){
+    toMp3(oggPath, userId){
         try {
             const outputPath = path.resolve(path.dirname(oggPath), `${userId}.mp3`)
             return new Promise((resolve, reject) => {
@@ -24,11 +24,11 @@ class OggConverter {
                         reject(e.message)
                     }).run()
             })
-        } catch (e: any) {
+        } catch (e) {
             console.log('Error while creating mp3', e)
         }
     }
-    async saveOggToLocalFile(url: string, fileName: string){
+    async saveOggToLocalFile(url, fileName){
         try {
             const oggPath = path.resolve(__dirname, '../../voices', `${fileName}.ogg`)
             const res = await axios.get(url, {responseType: 'stream'})
@@ -43,7 +43,7 @@ class OggConverter {
             console.log('Error while getting voice message')
         }
     }
-    async removeLocalFile(path: string) {
+    async removeLocalFile(path) {
         try {
           await unlink(path)
         } catch (e) {
