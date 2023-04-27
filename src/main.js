@@ -11,7 +11,7 @@ const bot = new Telegraf(config.get('TELEGRAM_TOKEN'))
 bot.use(session())
 bot.command('start', async (ctx) => {
     ctx.session = INITIAL_SESSION
-    await ctx.reply('Жду вашего голосового или текстового сообщения')
+    await ctx.reply(`Привет! Это кефтеме-бот, пришли мне голосовое или текстовое сообщение, чтобы начать диалог\nКонтекст беседы сохраняется - для создания нового контекста используйте команду "/new"`)
 })
 bot.command('new', async (ctx) => {
     ctx.session = INITIAL_SESSION
@@ -21,7 +21,7 @@ bot.on(message('voice'), async (ctx) => {
     //@ts-ignore
     ctx.session ??= INITIAL_SESSION
     try {
-        await ctx.reply(code('Подождите, пока ChapGPT сгенерирует ответ...'))
+        await ctx.reply(code('Подождите, кефтемекаю...'))
         const userId = String(ctx.message.from.id)
         const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id)
         const oggPath = await oggConverter.saveOggToLocalFile(link.href, userId)
@@ -50,7 +50,7 @@ bot.on(message('text'), async (ctx) => {
     //@ts-ignore
     ctx.session ??= INITIAL_SESSION
     try {
-        await ctx.reply(code('Подождите, пока ChapGPT сгенерирует ответ...'))
+        await ctx.reply(code('Подождите, кефтемекаю...'))
         //@ts-ignore
         ctx.session.messages.push({role: 'user', content: ctx.message.text})
         //@ts-ignore
